@@ -29,6 +29,7 @@ import (
 
 	"github.com/livekit/livekit-server/pkg/rtc"
 	"github.com/livekit/livekit-server/pkg/telemetry/prometheus"
+	"github.com/livekit/protocol/auth"
 	"github.com/livekit/protocol/logger"
 
 	"github.com/livekit/livekit-server/pkg/config"
@@ -115,12 +116,42 @@ func init() {
 	rand.Seed(time.Now().Unix())
 }
 
+func generateToken(apiKey, apiSecret, room, user string) (token string, err error) {
+	at := auth.NewAccessToken(apiKey, apiSecret)
+	grant := &auth.VideoGrant{
+		RoomJoin: true,
+		Room:     room,
+	}
+	at.SetVideoGrant(grant).
+		SetIdentity(user).
+		SetValidFor(24 * time.Hour)
+	token, err = at.ToJWT()
+	return
+}
+
+func generateDefaultParamsToken(user string) (string, error) {
+	return generateToken("devkey", "secret", "my-first-room", user)
+}
+
 func main() {
 	defer func() {
 		if rtc.Recover(logger.GetLogger()) != nil {
 			os.Exit(1)
 		}
 	}()
+
+	token, err := generateDefaultParamsToken("user1")
+	if err == nil {
+		fmt.Println("Generated Token (user1):", token)
+	}
+	token, err = generateDefaultParamsToken("user2")
+	if err == nil {
+		fmt.Println("Generated Token (user2):", token)
+	}
+	token, err = generateDefaultParamsToken("user3")
+	if err == nil {
+		fmt.Println("Generated Token (user3):", token)
+	}
 
 	generatedFlags, err := config.GenerateCLIFlags(baseFlags, true)
 	if err != nil {

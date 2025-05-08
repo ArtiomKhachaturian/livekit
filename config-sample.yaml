@@ -19,7 +19,7 @@ port: 7880
 # when redis is set, LiveKit will automatically operate in a fully distributed fashion
 # clients could connect to any node and be routed to the same room
 redis:
-  address: redis.host:6379
+  address: "localhost:6379"
   # db: 0
   # username: myuser
   # password: mypassword
@@ -64,7 +64,7 @@ rtc:
   # when set to true, attempts to discover the host's public IP via STUN
   # this is useful for cloud environments such as AWS & Google where hosts have an internal IP
   # that maps to an external one
-  use_external_ip: true
+  use_external_ip: false
   # # when set, LiveKit will attempt to use a UDP mux so all UDP traffic goes through
   # # listed port(s). To maximize system performance, we recommend using a range of ports
   # # greater or equal to the number of vCPUs on the machine.
@@ -147,13 +147,13 @@ rtc:
 # API key / secret pairs.
 # Keys are used for JWT authentication, server APIs would require a keypair in order to generate access tokens
 # and make calls to the server
-keys:
-  key1: secret1
-  key2: secret2
+# keys:
+#  key1: secret1
+#  key2: secret2
 # Logging config
-# logging:
+logging:
 #   # log level, valid values: debug, info, warn, error
-#   level: info
+  level: info
 #   # log level for pion, default error
 #   pion_level: error
 #   # when set to true, emit json fields
